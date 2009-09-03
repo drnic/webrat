@@ -13,8 +13,11 @@ module Webrat
   end
 
   def self.session_class
-    if Webrat.configuration.mode == :selenium
+    case Webrat.configuration.mode
+    when :selenium
       SeleniumSession
+    when :culerity
+      CuleritySession
     else
       Session
     end
