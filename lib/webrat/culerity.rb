@@ -10,19 +10,24 @@ require "webrat/culerity/core_ext/socket"
 module Webrat
 
   def self.start_app_server #:nodoc:
-    pid_file = prepare_pid_file("#{RAILS_ROOT}/tmp/pids", "mongrel_culerity.pid")
+    prepare_pid_file
+    stop_app_server
     system("mongrel_rails start -d --chdir=#{RAILS_ROOT} --port=#{Webrat.configuration.application_port} --environment=#{Webrat.configuration.application_environment} --pid #{pid_file} &")
     TCPSocket.wait_for_service :host => Webrat.configuration.application_address, :port => Webrat.configuration.application_port.to_i
   end
 
   def self.stop_app_server #:nodoc:
-    pid_file = File.expand_path(RAILS_ROOT + "/tmp/pids/mongrel_culerity.pid")
-    system "mongrel_rails stop -c #{RAILS_ROOT} --pid #{pid_file}"
+    if File.exists?(pid_file)
+      system "mongrel_rails stop -c #{RAILS_ROOT} --pid #{pid_file}"
+    end
   end
 
-  def self.prepare_pid_file(file_path, pid_file_name)
-    FileUtils.mkdir_p File.expand_path(file_path)
-    File.expand_path("#{file_path}/#{pid_file_name}")
+  def self.prepare_pid_file #:nodoc:
+    FileUtils.mkdir_p(File.dirname(pid_file))
+  end
+  
+  def self.pid_file #:nodoc:
+    File.expand_path(File.join(RAILS_ROOT, "tmp/pids", "mongrel_culerity.pid"))
   end
 
   # To use Webrat's Celerity support, activate it with (for example, in your <tt>env.rb</tt>):
