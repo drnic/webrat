@@ -17,9 +17,7 @@ module Webrat
   end
 
   def self.stop_app_server #:nodoc:
-    if File.exists?(pid_file)
-      system "mongrel_rails stop -c #{RAILS_ROOT} --pid #{pid_file}"
-    end
+    system "mongrel_rails stop -c #{RAILS_ROOT} --pid #{pid_file}" if File.exists?(pid_file)
   end
 
   def self.prepare_pid_file #:nodoc:

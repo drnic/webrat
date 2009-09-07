@@ -2,7 +2,7 @@ module Webrat
   class CulerityLocator
     def initialize(container, value, element_type, *how)
       @container    = container
-      @value        = value
+      @value        = /^#{value}/i
       @element_type = element_type
       @how          = how.blank? ? [:id, :name, :label, :text] : how
     end
