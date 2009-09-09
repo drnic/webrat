@@ -117,10 +117,22 @@ module Webrat
     end
 
     def with_handler(proc, &block)
-      old_handler = container.browser.webclient.confirm_handler
-      container.browser.webclient.confirm_handler = proc
-      block.call
-      container.browser.webclient.confirm_handler = old_handler
+      p proc, block
+      # old_handler = container.browser.webclient.confirm_handler
+      # puts "OLD HANDLER"
+      # p old_handler
+      # p old_handler.class
+      # container.browser.webclient.confirm_handler = proc
+      # block.call
+      # container.browser.webclient.confirm_handler = old_handler
+      
+      # self.send_remote(:add_listener, :confirm) { blk }
+      # block.call
+      # self.send_remote(:remove_listener, :confirm) { blk }
+      
+      container.browser.add_listener :confirm, &proc
+      block.call if block_given?
+      # container.browser.remove_listener :confirm, &proc
     end
 
     # FIXME duplication with webrat/core/scop
